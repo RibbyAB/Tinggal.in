@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcrypt");
 
@@ -12,7 +11,6 @@ async function hash(pw) {
 async function main() {
   console.log("Seeding database...");
 
-  // Clean slate (order matters because of foreign keys).
   await prisma.complaintUpdate.deleteMany();
   await prisma.complaint.deleteMany();
   await prisma.payment.deleteMany();
@@ -25,7 +23,6 @@ async function main() {
 
   const passwordHash = await hash(DEMO_PASSWORD);
 
-  // ---------------- Users: Owner + 2 Admins ----------------
   const owner = await prisma.user.create({
     data: {
       name: "Budi Santoso",
@@ -56,7 +53,6 @@ async function main() {
     },
   });
 
-  // ---------------- Rooms (15+) ----------------
   const roomTypes = ["STANDARD", "DELUXE", "VIP"];
   const roomPrices = { STANDARD: 1200000, DELUXE: 1800000, VIP: 2500000 };
   const roomsData = [];
@@ -82,11 +78,10 @@ async function main() {
       roomCounter++;
     }
   }
-  // 18 rooms total, satisfies "15+"
+
   await prisma.room.createMany({ data: roomsData });
   const rooms = await prisma.room.findMany({ orderBy: { roomNumber: "asc" } });
 
-  // ---------------- Tenants (10+) ----------------
   const tenantNames = [
     "Andi Pratama",
     "Dewi Lestari",
@@ -126,7 +121,6 @@ async function main() {
     tenants.push(tenant);
   }
 
-  // First "tenant@kostdemo.local" demo account, dedicated and predictable.
   const demoTenantUser = await prisma.user.create({
     data: {
       name: "Tenant Demo",
@@ -146,11 +140,9 @@ async function main() {
   });
   tenants.unshift(demoTenant);
 
-  // ---------------- Rentals: mix of ACTIVE and COMPLETED ----------------
   const now = new Date();
   const activeRentals = [];
 
-  // Demo tenant gets an active rental in room[0]
   const demoRoom = rooms[0];
   const demoRental = await prisma.rental.create({
     data: {
@@ -164,7 +156,6 @@ async function main() {
   await prisma.room.update({ where: { id: demoRoom.id }, data: { status: "OCCUPIED" } });
   activeRentals.push(demoRental);
 
-  // 8 more active rentals
   for (let i = 0; i < 8; i++) {
     const tenant = tenants[i + 1];
     const room = rooms[i + 1];
@@ -181,7 +172,6 @@ async function main() {
     activeRentals.push(rental);
   }
 
-  // 3 completed (past) rentals for history
   for (let i = 9; i < 12; i++) {
     const tenant = tenants[i];
     const room = rooms[i + 1];
@@ -197,10 +187,8 @@ async function main() {
     });
   }
 
-  // One room under maintenance for demo variety
   await prisma.room.update({ where: { id: rooms[rooms.length - 1].id }, data: { status: "MAINTENANCE" } });
 
-  // ---------------- Bills + Payments ----------------
   for (const rental of activeRentals) {
     for (let m = 2; m >= 0; m--) {
       const billDate = new Date(now.getFullYear(), now.getMonth() - m, 1);
@@ -217,23 +205,20 @@ async function main() {
         },
       });
 
-      // Vary payment status across months for meaningful demo data.
       if (m === 2) {
-        // oldest bill: paid & approved
-        const payment = await prisma.payment.create({
+        await prisma.payment.create({
           data: {
             billId: bill.id,
             amount: bill.amount,
             method: "BANK_TRANSFER",
             proofFilePath: "/uploads/payments/sample-proof.png",
             status: "APPROVED",
-            verifiedById: admin1.id,
+            verifiedById: owner.id,
             verifiedAt: dueDate,
           },
         });
         await prisma.bill.update({ where: { id: bill.id }, data: { status: "PAID" } });
       } else if (m === 1) {
-        // middle bill: pending verification
         await prisma.payment.create({
           data: {
             billId: bill.id,
@@ -245,11 +230,9 @@ async function main() {
         });
         await prisma.bill.update({ where: { id: bill.id }, data: { status: "PENDING_VERIFICATION" } });
       }
-      // m === 0 (current month): left UNPAID, no payment yet
     }
   }
 
-  // ---------------- Complaints ----------------
   const complaintSeeds = [
     { title: "AC tidak dingin", category: "FACILITY", priority: "MEDIUM", status: "OPEN" },
     { title: "Lampu kamar mati", category: "ELECTRICITY", priority: "HIGH", status: "IN_PROGRESS" },
@@ -284,11 +267,10 @@ async function main() {
     }
   }
 
-  // ---------------- Activity logs (sample) ----------------
   await prisma.activityLog.createMany({
     data: [
       { userId: owner.id, action: "SYSTEM_SEEDED", entity: "System", details: "Database seeded with demo data." },
-      { userId: admin1.id, action: "PAYMENT_APPROVED", entity: "Payment", details: "Demo seed activity." },
+      { userId: owner.id, action: "PAYMENT_APPROVED", entity: "Payment", details: "Demo seed activity." },
     ],
   });
 

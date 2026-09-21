@@ -1,8 +1,5 @@
 const prisma = require("../utils/prismaClient");
 
-// Revenue trend: total APPROVED payment amount, grouped by month, for the
-// last `months` months. Aggregated in JS for readability (dataset sizes in
-// a student project are small, so this keeps the SQL simple and explainable).
 async function getRevenueReport(months = 6) {
   const since = new Date();
   since.setMonth(since.getMonth() - (months - 1));

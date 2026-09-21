@@ -27,8 +27,6 @@ import BillsPage from "./pages/shared/BillsPage";
 import PaymentsPage from "./pages/shared/PaymentsPage";
 import ComplaintsPage from "./pages/shared/ComplaintsPage";
 
-// App.jsx stays a pure router: every page lives in its own file under
-// src/pages, grouped by role, per the required project structure.
 export default function App() {
   return (
     <ToastProvider>

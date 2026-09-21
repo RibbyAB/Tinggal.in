@@ -42,9 +42,6 @@ async function getBillById(id) {
   return bill;
 }
 
-// Business rule: a bill cannot be duplicated for the same rental and month.
-// Enforced both here (nice error message) and by the DB unique constraint
-// (uniqueBillPerMonth) as the ultimate safety net.
 async function generateBill(data, actingUser) {
   const rentalId = Number(data.rentalId);
   const billMonth = Number(data.billMonth);
@@ -67,7 +64,7 @@ async function generateBill(data, actingUser) {
         rentalId,
         billMonth,
         billYear,
-        amount: rental.monthlyPrice, // uses the rental's snapshot price, not the live room price
+        amount: rental.monthlyPrice,
         dueDate: new Date(data.dueDate),
         status: "UNPAID",
       },

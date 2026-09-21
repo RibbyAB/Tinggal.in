@@ -1,9 +1,6 @@
 import LoadingSpinner from "../common/LoadingSpinner";
 import EmptyState from "../common/EmptyState";
 
-// Generic, reusable table: columns = [{ key, header, render? }].
-// render(row) lets a page customize a cell (badges, currency, buttons)
-// without needing a bespoke table component per page.
 export default function DataTable({ columns, rows, loading, emptyText = "No records found." }) {
   if (loading) return <LoadingSpinner />;
   if (!rows || rows.length === 0) return <EmptyState title={emptyText} />;

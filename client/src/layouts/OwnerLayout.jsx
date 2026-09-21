@@ -19,7 +19,7 @@ export default function OwnerLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="dashboard-bg flex min-h-screen">
       <Sidebar title="Owner" links={links} open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex flex-1 flex-col lg:ml-0">
         <Navbar onMenuClick={() => setSidebarOpen(true)} />

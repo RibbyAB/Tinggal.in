@@ -9,7 +9,7 @@ const { createRentalValidator } = require("../validators/rentalValidator");
 
 router.use(authenticateToken, attachTenantId);
 
-router.get("/", getRentals); // TENANT scoped to own rentals inside controller
+router.get("/", getRentals);
 router.post("/", authorizeRoles("OWNER", "ADMIN"), validate(createRentalValidator), createRental);
 router.post("/:id/checkout", authorizeRoles("OWNER", "ADMIN"), checkoutRental);
 

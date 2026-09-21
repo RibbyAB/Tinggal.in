@@ -14,8 +14,6 @@ function generateToken(user) {
 async function login(email, password) {
   const user = await prisma.user.findUnique({ where: { email }, include: { tenant: true } });
 
-  // Same error message whether the email doesn't exist or the password is
-  // wrong, so we don't leak which emails are registered.
   if (!user || !user.isActive) {
     throw new AppError("Invalid email or password.", 401);
   }

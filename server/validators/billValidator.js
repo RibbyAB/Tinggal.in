@@ -1,4 +1,4 @@
-const { isEmpty } = require("./validate");
+const { isEmpty, isValidDate } = require("./validate");
 
 function generateBillValidator(body) {
   const errors = [];
@@ -9,6 +9,7 @@ function generateBillValidator(body) {
   }
   if (isEmpty(body.billYear)) errors.push({ field: "billYear", message: "Bill year is required." });
   if (isEmpty(body.dueDate)) errors.push({ field: "dueDate", message: "Due date is required." });
+  else if (!isValidDate(body.dueDate)) errors.push({ field: "dueDate", message: "Due date is not a valid date." });
   return errors;
 }
 

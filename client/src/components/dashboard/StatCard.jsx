@@ -1,18 +1,71 @@
-export default function StatCard({ label, value, icon, accent = "primary" }) {
-  const accentClasses = {
-    primary: "bg-primary-50 text-primary-600",
-    emerald: "bg-emerald-50 text-emerald-600",
-    amber: "bg-amber-50 text-amber-600",
-    red: "bg-red-50 text-red-600",
-  };
+const VARIANTS = {
+  plain: {
+    card: "border-white/70 bg-white/80 backdrop-blur-sm",
+    label: "text-gray-500",
+    value: "text-gray-900",
+    sub: "text-gray-400",
+    track: "bg-gray-100",
+    bar: "bg-primary-600",
+  },
+  soft: {
+    card: "border-primary-100 bg-primary-50/80 backdrop-blur-sm",
+    label: "text-primary-700",
+    value: "text-gray-900",
+    sub: "text-primary-700/70",
+    track: "bg-primary-100",
+    bar: "bg-primary-600",
+  },
+  accent: {
+    card: "border-primary-700 bg-gradient-to-br from-primary-600 to-primary-800",
+    label: "text-white/70",
+    value: "text-white",
+    sub: "text-white/60",
+    track: "bg-white/20",
+    bar: "bg-white",
+  },
+};
+
+const ICONS = {
+  primary: { plain: "bg-primary-50 text-primary-700", soft: "bg-white text-primary-700", accent: "bg-white/15 text-white" },
+  warm: { plain: "bg-amber-50 text-amber-700", soft: "bg-white text-amber-700", accent: "bg-white/15 text-white" },
+};
+
+export default function StatCard({
+  label,
+  value,
+  sublabel,
+  icon,
+  variant = "plain",
+  iconTone = "primary",
+  progress,
+  progressLabel,
+}) {
+  const v = VARIANTS[variant] || VARIANTS.plain;
+  const iconClass = (ICONS[iconTone] || ICONS.primary)[variant] || ICONS.primary.plain;
 
   return (
-    <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
-      <div className="flex items-center justify-between">
-        <p className="text-sm font-medium text-gray-500">{label}</p>
-        {icon && <div className={`rounded-lg p-2 ${accentClasses[accent]}`}>{icon}</div>}
+    <div className={`rounded-2xl border p-5 shadow-sm shadow-primary-900/5 ${v.card}`}>
+      <div className="flex items-start justify-between gap-3">
+        <p className={`text-sm font-medium ${v.label}`}>{label}</p>
+        {icon && (
+          <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${iconClass}`}>{icon}</div>
+        )}
       </div>
-      <p className="mt-2 text-2xl font-semibold text-gray-900">{value}</p>
+
+      <p className={`mt-3 text-2xl font-semibold tracking-tight ${v.value}`}>{value}</p>
+      {sublabel && <p className={`mt-1 text-xs ${v.sub}`}>{sublabel}</p>}
+
+      {typeof progress === "number" && (
+        <div className="mt-4">
+          <div className={`h-1.5 w-full overflow-hidden rounded-full ${v.track}`}>
+            <div
+              className={`h-full rounded-full ${v.bar}`}
+              style={{ width: `${Math.min(Math.max(progress, 0), 100)}%` }}
+            />
+          </div>
+          {progressLabel && <p className={`mt-1.5 text-xs ${v.sub}`}>{progressLabel}</p>}
+        </div>
+      )}
     </div>
   );
 }

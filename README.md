@@ -23,7 +23,7 @@ your presentation._
 - Role-based access control (OWNER / ADMIN / TENANT), enforced on the backend
 - Room, tenant, and rental (check-in/check-out) management
 - Monthly bill generation, one bill per rental per month
-- Payment proof upload (Multer) with owner/admin approval workflow
+- Payment proof upload (Multer) with owner-only approval workflow
 - Complaint submission and status tracking with full handling history
 - Owner analytics dashboard (revenue trend, occupancy, payment status charts)
 - Admin operational dashboard (no financial data)
@@ -41,7 +41,7 @@ your presentation._
 | Create tenant accounts          |  ✅   |  ✅   |   ❌   |
 | Check tenants in / out          |  ✅   |  ✅   |   ❌   |
 | Generate bills                  |  ✅   |  ✅   |   ❌   |
-| Approve / reject payments       |  ✅   |  ✅   |   ❌   |
+| Approve / reject payments       |  ✅   |  ❌   |   ❌   |
 | Manage complaint status         |  ✅   |  ✅   |   ❌   |
 | View activity logs              |  ✅   |  ✅   |   ❌   |
 | View own bill & upload payment  |  ❌   |  ❌   |   ✅   |

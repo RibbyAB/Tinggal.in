@@ -1,25 +1,22 @@
 import { NavLink } from "react-router-dom";
 
-// Shared sidebar shell used by all three layouts, configured with the
-// nav links relevant to that role. Desktop: fixed sidebar. Mobile: drawer
-// toggled by the parent layout (spec section 16).
 export default function Sidebar({ title, links, open, onClose }) {
   return (
     <>
       {open && <div className="fixed inset-0 z-20 bg-black/30 lg:hidden" onClick={onClose} />}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-30 w-64 transform bg-white border-r border-gray-100 transition-transform lg:static lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-30 w-64 transform overflow-y-auto bg-primary-800 transition-transform lg:sticky lg:top-0 lg:h-screen lg:translate-x-0 lg:self-start ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex h-16 items-center gap-2 border-b border-gray-100 px-5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-600 text-sm font-bold text-white">
+        <div className="flex h-16 items-center gap-2.5 border-b border-white/10 px-5">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white text-sm font-bold text-primary-700">
             K
           </div>
           <div>
-            <p className="text-sm font-semibold text-gray-900">Kost Management</p>
-            <p className="text-xs text-gray-400">{title}</p>
+            <p className="text-sm font-semibold text-white">Kost Management</p>
+            <p className="text-xs text-primary-200">{title}</p>
           </div>
         </div>
 
@@ -32,7 +29,7 @@ export default function Sidebar({ title, links, open, onClose }) {
               onClick={onClose}
               className={({ isActive }) =>
                 `rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                  isActive ? "bg-primary-50 text-primary-700" : "text-gray-600 hover:bg-gray-50"
+                  isActive ? "bg-white/15 text-white" : "text-primary-100/70 hover:bg-white/10 hover:text-white"
                 }`
               }
             >

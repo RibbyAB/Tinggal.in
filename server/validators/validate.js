@@ -1,9 +1,5 @@
 const { error } = require("../utils/apiResponse");
 
-// Tiny dependency-free validator. Each validator module exports a function
-// that takes req.body and returns an array of { field, message } errors.
-// Kept intentionally simple (no external library) so it's easy for a
-// student to read and explain end-to-end.
 function validate(validatorFn) {
   return (req, res, next) => {
     const errors = validatorFn(req.body || {});

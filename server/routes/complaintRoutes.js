@@ -18,8 +18,8 @@ const {
 
 router.use(authenticateToken, attachTenantId);
 
-router.get("/", getComplaints); // TENANT scoped to own complaints inside controller
-router.get("/:id", getComplaint); // ownership enforced in service
+router.get("/", getComplaints);
+router.get("/:id", getComplaint);
 router.post(
   "/",
   authorizeRoles("TENANT"),

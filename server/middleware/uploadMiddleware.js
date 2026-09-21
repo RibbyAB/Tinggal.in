@@ -5,11 +5,8 @@ const AppError = require("../utils/AppError");
 
 const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp"];
 const ALLOWED_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp"];
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
-// Generates a storage engine for a given upload subfolder (payments / complaints).
-// Filenames are never trusted from the client - we generate a random one and
-// keep only the validated extension.
 function makeStorage(subfolder) {
   return multer.diskStorage({
     destination: (req, file, cb) => {

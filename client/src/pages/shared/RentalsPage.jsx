@@ -44,19 +44,22 @@ export default function RentalsPage() {
 
   useEffect(() => {
     load(1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters]);
 
   async function openCreate() {
     setForm({ tenantId: "", roomId: "", startDate: new Date().toISOString().slice(0, 10), notes: "" });
     setFormError("");
-    const [tenantsRes, roomsRes] = await Promise.all([
-      tenantService.getTenants({ limit: 100 }),
-      roomService.getRooms({ status: "AVAILABLE", limit: 100 }),
-    ]);
-    setAvailableTenants(tenantsRes.data.data.tenants);
-    setAvailableRooms(roomsRes.data.data.rooms);
-    setModalOpen(true);
+    try {
+      const [tenantsRes, roomsRes] = await Promise.all([
+        tenantService.getTenants({ limit: 100 }),
+        roomService.getRooms({ status: "AVAILABLE", limit: 100 }),
+      ]);
+      setAvailableTenants(tenantsRes.data.data.tenants);
+      setAvailableRooms(roomsRes.data.data.rooms);
+      setModalOpen(true);
+    } catch (err) {
+      showToast(err.response?.data?.message || "Failed to load form data.", "error");
+    }
   }
 
   async function handleSubmit(e) {

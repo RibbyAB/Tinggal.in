@@ -28,9 +28,6 @@ async function listComplaints({ status, priority, category, tenantId, page = 1, 
   return { complaints, total, page: Number(page), limit: Number(limit), totalPages: Math.ceil(total / limit) };
 }
 
-// tenantId comes from the URL param for OWNER/ADMIN, but derived from the
-// session for TENANT (enforced in the controller) so a tenant cannot read
-// another tenant's complaint by id (IDOR).
 async function getComplaintById(id, { tenantId = null } = {}) {
   const complaint = await prisma.complaint.findUnique({
     where: { id: Number(id) },
@@ -46,7 +43,7 @@ async function getComplaintById(id, { tenantId = null } = {}) {
   return complaint;
 }
 
-async function createComplaint(data, imagePath, tenantId) {
+async function createComplaint(data, imagePath, tenantId, actingUserId) {
   return prisma.$transaction(async (tx) => {
     const complaint = await tx.complaint.create({
       data: {
@@ -61,7 +58,7 @@ async function createComplaint(data, imagePath, tenantId) {
     });
 
     await logActivity(tx, {
-      userId: null,
+      userId: actingUserId,
       action: "COMPLAINT_SUBMITTED",
       entity: "Complaint",
       entityId: complaint.id,
@@ -72,8 +69,6 @@ async function createComplaint(data, imagePath, tenantId) {
   });
 }
 
-// Complaint flow: OPEN -> IN_PROGRESS -> RESOLVED (-> CLOSED). Every change
-// is recorded as a ComplaintUpdate row so the handling history is visible.
 async function updateComplaintStatus(id, status, note, actingUser) {
   return prisma.$transaction(async (tx) => {
     const complaint = await tx.complaint.findUnique({ where: { id: Number(id) } });

@@ -42,7 +42,6 @@ export default function RoomsPage() {
 
   useEffect(() => {
     load(1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, filters]);
 
   function openCreate() {
@@ -110,15 +109,17 @@ export default function RoomsPage() {
           <button onClick={() => openEdit(r)} className="text-primary-600 hover:underline">
             Edit
           </button>
-          {r.status !== "MAINTENANCE" ? (
+          {r.status === "AVAILABLE" && (
             <button onClick={() => handleStatusChange(r, "MAINTENANCE")} className="text-amber-600 hover:underline">
               Maintenance
             </button>
-          ) : (
-            <button onClick={() => handleStatusChange(r, "AVAILABLE")} className="text-emerald-600 hover:underline">
+          )}
+          {r.status === "MAINTENANCE" && (
+            <button onClick={() => handleStatusChange(r, "AVAILABLE")} className="text-primary-600 hover:underline">
               Set Available
             </button>
           )}
+          {r.status === "OCCUPIED" && <span className="text-gray-400">Dihuni</span>}
         </div>
       ),
     },

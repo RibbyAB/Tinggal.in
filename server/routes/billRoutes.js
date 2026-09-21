@@ -9,7 +9,7 @@ const { generateBillValidator } = require("../validators/billValidator");
 
 router.use(authenticateToken, attachTenantId);
 
-router.get("/", getBills); // TENANT scoped to own bills inside controller
+router.get("/", getBills);
 router.get("/:id", getBill);
 router.post("/generate", authorizeRoles("OWNER", "ADMIN"), validate(generateBillValidator), generateBill);
 

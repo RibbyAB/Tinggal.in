@@ -42,10 +42,14 @@ export default function TenantPaymentsPage() {
   async function openUpload() {
     setFormError("");
     setFile(null);
-    const res = await billService.getBills({ status: "UNPAID", limit: 20 });
-    setUnpaidBills(res.data.data.bills);
-    setForm({ billId: "", amount: "", method: "BANK_TRANSFER" });
-    setUploadOpen(true);
+    try {
+      const res = await billService.getBills({ status: "UNPAID", limit: 20 });
+      setUnpaidBills(res.data.data.bills);
+      setForm({ billId: "", amount: "", method: "BANK_TRANSFER" });
+      setUploadOpen(true);
+    } catch (err) {
+      showToast(err.response?.data?.message || "Failed to load your unpaid bills.", "error");
+    }
   }
 
   function handleBillChange(billId) {

@@ -3,7 +3,6 @@ const { success } = require("../utils/apiResponse");
 const rentalService = require("../services/rentalService");
 
 const getRentals = asyncHandler(async (req, res) => {
-  // A TENANT only ever sees their own rentals.
   const query = req.user.role === "TENANT" ? { ...req.query, tenantId: req.tenantId } : req.query;
   const result = await rentalService.listRentals(query);
   success(res, { message: "Rentals fetched.", data: result });

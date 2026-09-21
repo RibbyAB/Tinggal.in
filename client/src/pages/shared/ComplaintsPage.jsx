@@ -39,14 +39,17 @@ export default function ComplaintsPage() {
 
   useEffect(() => {
     load(1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters]);
 
   async function openDetail(row) {
-    const res = await complaintService.getComplaint(row.id);
-    setDetail(res.data.data);
-    setNewStatus(row.status);
-    setNote("");
+    try {
+      const res = await complaintService.getComplaint(row.id);
+      setDetail(res.data.data);
+      setNewStatus(row.status);
+      setNote("");
+    } catch (err) {
+      showToast(err.response?.data?.message || "Failed to open complaint detail.", "error");
+    }
   }
 
   async function handleUpdateStatus(e) {

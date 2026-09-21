@@ -51,8 +51,6 @@ async function getTenantById(id) {
   return tenant;
 }
 
-// Only Owner/Admin can create tenant accounts (public self-registration as
-// OWNER/ADMIN is never exposed via the API).
 async function createTenant(data, actingUser) {
   const existingUser = await prisma.user.findUnique({ where: { email: data.email } });
   if (existingUser) throw new AppError("A user with this email already exists.", 409);

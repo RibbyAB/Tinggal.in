@@ -11,7 +11,7 @@ export default function Navbar({ onMenuClick }) {
   }
 
   return (
-    <header className="flex h-16 items-center justify-between border-b border-gray-100 bg-white px-4 lg:px-6">
+    <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-white/60 bg-white/70 px-4 backdrop-blur-md lg:px-6">
       <button onClick={onMenuClick} className="text-gray-500 lg:hidden" aria-label="Open menu">
         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />

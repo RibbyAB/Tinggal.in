@@ -3,8 +3,6 @@ import * as authService from "../services/authService";
 
 const AuthContext = createContext(null);
 
-// Holds authentication + current user + role in React Context, as required
-// by spec section 13. Normal page data stays in local component state.
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -14,8 +12,6 @@ export function AuthProvider({ children }) {
     const storedUser = localStorage.getItem("user");
 
     if (token && storedUser) {
-      // Optimistically hydrate from localStorage, then confirm with the
-      // server (in case the account was deactivated or the token expired).
       setUser(JSON.parse(storedUser));
       authService
         .getMe()

@@ -2,8 +2,6 @@ const jwt = require("jsonwebtoken");
 const prisma = require("../utils/prismaClient");
 const { error } = require("../utils/apiResponse");
 
-// Verifies the JWT sent in the Authorization header and attaches the
-// authenticated user (without the password hash) to req.user.
 async function authenticateToken(req, res, next) {
   try {
     const authHeader = req.headers.authorization || "";
@@ -32,8 +30,6 @@ async function authenticateToken(req, res, next) {
   }
 }
 
-// Usage: authorizeRoles("OWNER", "ADMIN")
-// Must run after authenticateToken.
 function authorizeRoles(...allowedRoles) {
   return (req, res, next) => {
     if (!req.user) {

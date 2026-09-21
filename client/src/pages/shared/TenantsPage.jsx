@@ -40,7 +40,6 @@ export default function TenantsPage() {
 
   useEffect(() => {
     load(1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, filters]);
 
   function openCreate() {

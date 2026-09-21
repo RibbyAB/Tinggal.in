@@ -10,9 +10,6 @@ import ErrorState from "../../components/common/ErrorState";
 import { useToast } from "../../context/ToastContext";
 import { formatCurrency, formatDate, MONTH_NAMES } from "../../utils/format";
 
-// Reused for both Owner and Admin routes - backend permissions decide who
-// can actually call POST /bills/generate; a TENANT visiting /tenant/bills
-// gets their own bills only because the backend scopes tenantId server-side.
 export default function BillsPage() {
   const { showToast } = useToast();
   const [bills, setBills] = useState([]);
@@ -42,15 +39,18 @@ export default function BillsPage() {
 
   useEffect(() => {
     load(1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters]);
 
   async function openCreate() {
     setForm({ rentalId: "", billMonth: String(new Date().getMonth() + 1), billYear: new Date().getFullYear(), dueDate: "" });
     setFormError("");
-    const res = await rentalService.getRentals({ status: "ACTIVE", limit: 100 });
-    setActiveRentals(res.data.data.rentals);
-    setModalOpen(true);
+    try {
+      const res = await rentalService.getRentals({ status: "ACTIVE", limit: 100 });
+      setActiveRentals(res.data.data.rentals);
+      setModalOpen(true);
+    } catch (err) {
+      showToast(err.response?.data?.message || "Failed to load active rentals.", "error");
+    }
   }
 
   async function handleSubmit(e) {

@@ -2,8 +2,6 @@ import { createContext, useCallback, useContext, useState } from "react";
 
 const ToastContext = createContext(null);
 
-// Minimal toast notification system (spec section 15). Kept in Context
-// since toasts can be triggered from any page.
 export function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([]);
 

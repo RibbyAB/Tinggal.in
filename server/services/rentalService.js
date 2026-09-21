@@ -27,19 +27,14 @@ async function listRentals({ status, tenantId, roomId, page = 1, limit = 10 }) {
   return { rentals, total, page: Number(page), limit: Number(limit), totalPages: Math.ceil(total / limit) };
 }
 
-// Check-in flow (see spec section 11):
-// Validate tenant -> Validate room -> Create rental -> Update room -> Log activity
-// All wrapped in a single transaction so a failure at any step rolls everything back.
 async function createRental(data, actingUser) {
   const tenantId = Number(data.tenantId);
   const roomId = Number(data.roomId);
 
   return prisma.$transaction(async (tx) => {
-    // 1. Validate tenant exists
     const tenant = await tx.tenant.findUnique({ where: { id: tenantId } });
     if (!tenant) throw new AppError("Tenant not found.", 404);
 
-    // Business rule: tenant cannot have multiple ACTIVE rentals simultaneously.
     const existingActiveRental = await tx.rental.findFirst({
       where: { tenantId, status: "ACTIVE" },
     });
@@ -47,7 +42,6 @@ async function createRental(data, actingUser) {
       throw new AppError("This tenant already has an active rental.", 409);
     }
 
-    // 2. Validate room exists and has capacity available
     const room = await tx.room.findUnique({ where: { id: roomId } });
     if (!room) throw new AppError("Room not found.", 404);
     if (room.status === "MAINTENANCE") {
@@ -59,8 +53,6 @@ async function createRental(data, actingUser) {
       throw new AppError("Room capacity has been reached.", 409);
     }
 
-    // 3. Create rental - snapshot the room's current price so future price
-    //    changes never alter this rental's historical price.
     const rental = await tx.rental.create({
       data: {
         tenantId,
@@ -72,13 +64,11 @@ async function createRental(data, actingUser) {
       },
     });
 
-    // 4. Update room status: if the room is now at capacity, mark it OCCUPIED.
     const occupantsAfter = activeOccupants + 1;
     if (occupantsAfter >= room.capacity) {
       await tx.room.update({ where: { id: roomId }, data: { status: "OCCUPIED" } });
     }
 
-    // 5. Log activity
     await logActivity(tx, {
       userId: actingUser.id,
       action: "RENTAL_CREATED",
@@ -91,7 +81,6 @@ async function createRental(data, actingUser) {
   });
 }
 
-// Checkout flow: closes the active rental and frees up the room.
 async function checkoutRental(rentalId, actingUser) {
   return prisma.$transaction(async (tx) => {
     const rental = await tx.rental.findUnique({ where: { id: Number(rentalId) }, include: { room: true } });
@@ -103,7 +92,6 @@ async function checkoutRental(rentalId, actingUser) {
       data: { status: "COMPLETED", endDate: new Date() },
     });
 
-    // Room availability updates according to active rentals remaining.
     const remainingActive = await tx.rental.count({
       where: { roomId: rental.roomId, status: "ACTIVE" },
     });

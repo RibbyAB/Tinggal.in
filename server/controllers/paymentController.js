@@ -1,5 +1,5 @@
 const asyncHandler = require("../utils/asyncHandler");
-const { success, error } = require("../utils/apiResponse");
+const { success } = require("../utils/apiResponse");
 const paymentService = require("../services/paymentService");
 const AppError = require("../utils/AppError");
 
@@ -9,15 +9,12 @@ const getPayments = asyncHandler(async (req, res) => {
   success(res, { message: "Payments fetched.", data: result });
 });
 
-// Only the correct tenant can upload payment proof for their own bill
-// (ownership is verified in the service using req.tenantId, never trusting
-// any tenantId the client might send).
 const createPayment = asyncHandler(async (req, res) => {
   if (!req.file) {
     throw new AppError("Payment proof file is required.", 422);
   }
   const proofFilePath = `/uploads/payments/${req.file.filename}`;
-  const payment = await paymentService.createPayment(req.body, proofFilePath, req.tenantId);
+  const payment = await paymentService.createPayment(req.body, proofFilePath, req.tenantId, req.user.id);
   success(res, { message: "Payment proof submitted for verification.", data: payment, statusCode: 201 });
 });
 

@@ -15,7 +15,7 @@ const { createPaymentValidator } = require("../validators/paymentValidator");
 
 router.use(authenticateToken, attachTenantId);
 
-router.get("/", getPayments); // TENANT scoped to own payments inside controller
+router.get("/", getPayments);
 router.post(
   "/",
   authorizeRoles("TENANT"),
@@ -23,7 +23,7 @@ router.post(
   validate(createPaymentValidator),
   createPayment
 );
-router.patch("/:id/approve", authorizeRoles("ADMIN", "OWNER"), approvePayment);
-router.patch("/:id/reject", authorizeRoles("ADMIN", "OWNER"), rejectPayment);
+router.patch("/:id/approve", authorizeRoles("OWNER"), approvePayment);
+router.patch("/:id/reject", authorizeRoles("OWNER"), rejectPayment);
 
 module.exports = router;

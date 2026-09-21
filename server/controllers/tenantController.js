@@ -7,8 +7,6 @@ const getTenants = asyncHandler(async (req, res) => {
   success(res, { message: "Tenants fetched.", data: result });
 });
 
-// Rule: tenant cannot access another tenant's data. A TENANT calling this
-// may only fetch their own profile.
 const getTenant = asyncHandler(async (req, res) => {
   if (req.user.role === "TENANT" && req.user.tenant?.id !== Number(req.params.id)) {
     return error(res, { message: "You can only view your own profile.", statusCode: 403 });

@@ -86,20 +86,30 @@ async function updateRoom(id, data, actingUser) {
   });
 }
 
-// Manual status override (e.g. putting a room into MAINTENANCE). Occupied
-// status driven by rentals is handled automatically by rentalService.
+const MANUAL_STATUSES = ["AVAILABLE", "MAINTENANCE"];
+
 async function updateRoomStatus(id, status, actingUser) {
   const room = await prisma.room.findUnique({ where: { id: Number(id) } });
   if (!room) throw new AppError("Room not found.", 404);
 
-  if (status === "AVAILABLE") {
-    const activeRental = await prisma.rental.findFirst({
-      where: { roomId: Number(id), status: "ACTIVE" },
-    });
-    if (activeRental) {
-      throw new AppError("Cannot mark room as AVAILABLE while it has an active rental.", 409);
-    }
+  if (!MANUAL_STATUSES.includes(status)) {
+    throw new AppError(
+      "Room status can only be set to AVAILABLE or MAINTENANCE. OCCUPIED is set automatically at check-in.",
+      422
+    );
   }
+
+  const activeRental = await prisma.rental.findFirst({
+    where: { roomId: Number(id), status: "ACTIVE" },
+  });
+  if (activeRental) {
+    throw new AppError(
+      "This room still has an active tenant. Check the tenant out before changing the room status.",
+      409
+    );
+  }
+
+  if (room.status === status) return room;
 
   return prisma.$transaction(async (tx) => {
     const updated = await tx.room.update({ where: { id: Number(id) }, data: { status } });

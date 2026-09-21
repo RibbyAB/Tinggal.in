@@ -6,6 +6,8 @@ import PaymentStatusChart from "../../components/dashboard/PaymentStatusChart";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import ErrorState from "../../components/common/ErrorState";
 
+const REVENUE_MONTHS = 12;
+
 export default function ReportsPage() {
   const [revenue, setRevenue] = useState([]);
   const [occupancy, setOccupancy] = useState(null);
@@ -18,7 +20,7 @@ export default function ReportsPage() {
     setError("");
     try {
       const [revRes, occRes, payRes] = await Promise.all([
-        reportService.getRevenueReport(12),
+        reportService.getRevenueReport(REVENUE_MONTHS),
         reportService.getOccupancyReport(),
         reportService.getPaymentStatusReport(),
       ]);
@@ -46,7 +48,7 @@ export default function ReportsPage() {
         <p className="text-sm text-gray-500">Financial and operational analytics (Owner only).</p>
       </div>
 
-      <RevenueChart data={revenue} />
+      <RevenueChart data={revenue} months={REVENUE_MONTHS} />
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <OccupancyChart occupied={occupancy.occupied} available={occupancy.available} maintenance={occupancy.maintenance} />
         <PaymentStatusChart data={paymentStatus} />

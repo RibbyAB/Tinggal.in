@@ -8,12 +8,15 @@ import Modal from "../../components/common/Modal";
 import ConfirmDialog from "../../components/common/ConfirmDialog";
 import ErrorState from "../../components/common/ErrorState";
 import { useToast } from "../../context/ToastContext";
+import { useAuth } from "../../context/AuthContext";
 import { formatCurrency, formatDate } from "../../utils/format";
 
 const API_ORIGIN = (import.meta.env.VITE_API_URL || "http://localhost:5000/api").replace(/\/api$/, "");
 
 export default function PaymentsPage() {
   const { showToast } = useToast();
+  const { user } = useAuth();
+  const canVerify = user?.role === "OWNER";
   const [payments, setPayments] = useState([]);
   const [meta, setMeta] = useState({ page: 1, totalPages: 1 });
   const [loading, setLoading] = useState(true);
@@ -41,7 +44,6 @@ export default function PaymentsPage() {
 
   useEffect(() => {
     load(1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters]);
 
   async function handleApprove() {
@@ -84,16 +86,19 @@ export default function PaymentsPage() {
           <button onClick={() => setProofPayment(p)} className="text-primary-600 hover:underline">
             View Proof
           </button>
-          {p.status === "PENDING" && (
-            <>
-              <button onClick={() => setApproveTarget(p)} className="text-emerald-600 hover:underline">
-                Approve
-              </button>
-              <button onClick={() => setRejectTarget(p)} className="text-red-600 hover:underline">
-                Reject
-              </button>
-            </>
-          )}
+          {p.status === "PENDING" &&
+            (canVerify ? (
+              <>
+                <button onClick={() => setApproveTarget(p)} className="text-primary-600 hover:underline">
+                  Approve
+                </button>
+                <button onClick={() => setRejectTarget(p)} className="text-red-600 hover:underline">
+                  Reject
+                </button>
+              </>
+            ) : (
+              <span className="text-gray-400">Menunggu Owner</span>
+            ))}
         </div>
       ),
     },

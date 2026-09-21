@@ -1,5 +1,3 @@
-// Simple, predictable filter bar (spec section 17): a search input plus any
-// number of select filters, provided as `filters = [{ key, label, options }]`.
 export default function FilterBar({ search, onSearchChange, searchPlaceholder = "Search...", filters = [], values = {}, onFilterChange }) {
   return (
     <div className="flex flex-wrap items-center gap-3 border-b border-gray-100 p-4">

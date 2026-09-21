@@ -1,6 +1,3 @@
-// Small helpers so every endpoint returns the same JSON shape.
-// { success, message, data } for success, { success, message, errors? } for errors.
-
 function success(res, { message = "Success", data = null, statusCode = 200 } = {}) {
   return res.status(statusCode).json({ success: true, message, data });
 }

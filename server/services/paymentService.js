@@ -30,10 +30,7 @@ async function listPayments({ status, month, tenantId, page = 1, limit = 10 }) {
   return { payments, total, page: Number(page), limit: Number(limit), totalPages: Math.ceil(total / limit) };
 }
 
-// Only the tenant who owns the bill may upload a payment proof for it.
-// tenantId is derived from the authenticated session (never trusted from
-// the request body) to prevent IDOR.
-async function createPayment(data, proofFilePath, tenantId) {
+async function createPayment(data, proofFilePath, tenantId, actingUserId) {
   const bill = await prisma.bill.findUnique({
     where: { id: Number(data.billId) },
     include: { rental: true },
@@ -48,6 +45,13 @@ async function createPayment(data, proofFilePath, tenantId) {
   }
 
   return prisma.$transaction(async (tx) => {
+    const alreadyWaiting = await tx.payment.count({
+      where: { billId: bill.id, status: "PENDING" },
+    });
+    if (alreadyWaiting > 0) {
+      throw new AppError("A payment for this bill is already waiting for verification.", 409);
+    }
+
     const payment = await tx.payment.create({
       data: {
         billId: bill.id,
@@ -61,7 +65,7 @@ async function createPayment(data, proofFilePath, tenantId) {
     await tx.bill.update({ where: { id: bill.id }, data: { status: "PENDING_VERIFICATION" } });
 
     await logActivity(tx, {
-      userId: null,
+      userId: actingUserId,
       action: "PAYMENT_SUBMITTED",
       entity: "Payment",
       entityId: payment.id,
@@ -72,14 +76,11 @@ async function createPayment(data, proofFilePath, tenantId) {
   });
 }
 
-// Approval flow (see spec section 11):
-// Validate payment -> Update payment -> Update bill -> Save verifier -> Log activity
 async function approvePayment(paymentId, actingUser) {
   return prisma.$transaction(async (tx) => {
     const payment = await tx.payment.findUnique({ where: { id: Number(paymentId) }, include: { bill: true } });
     if (!payment) throw new AppError("Payment not found.", 404);
 
-    // Business rule: payment cannot be approved twice.
     if (payment.status !== "PENDING") {
       throw new AppError(`Payment has already been ${payment.status.toLowerCase()}.`, 409);
     }
@@ -103,9 +104,26 @@ async function approvePayment(paymentId, actingUser) {
   });
 }
 
+async function resolveBillStatus(tx, rejectedPayment) {
+  const approved = await tx.payment.count({
+    where: { billId: rejectedPayment.billId, status: "APPROVED" },
+  });
+  if (approved > 0) return "PAID";
+
+  const stillWaiting = await tx.payment.count({
+    where: { billId: rejectedPayment.billId, status: "PENDING", id: { not: rejectedPayment.id } },
+  });
+  if (stillWaiting > 0) return "PENDING_VERIFICATION";
+
+  return new Date(rejectedPayment.bill.dueDate) < new Date() ? "OVERDUE" : "UNPAID";
+}
+
 async function rejectPayment(paymentId, note, actingUser) {
   return prisma.$transaction(async (tx) => {
-    const payment = await tx.payment.findUnique({ where: { id: Number(paymentId) } });
+    const payment = await tx.payment.findUnique({
+      where: { id: Number(paymentId) },
+      include: { bill: true },
+    });
     if (!payment) throw new AppError("Payment not found.", 404);
 
     if (payment.status !== "PENDING") {
@@ -122,8 +140,10 @@ async function rejectPayment(paymentId, note, actingUser) {
       },
     });
 
-    // Bill goes back to UNPAID so the tenant can resubmit.
-    await tx.bill.update({ where: { id: payment.billId }, data: { status: "UNPAID" } });
+    await tx.bill.update({
+      where: { id: payment.billId },
+      data: { status: await resolveBillStatus(tx, payment) },
+    });
 
     await logActivity(tx, {
       userId: actingUser.id,

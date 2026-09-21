@@ -16,7 +16,7 @@ const getComplaint = asyncHandler(async (req, res) => {
 
 const createComplaint = asyncHandler(async (req, res) => {
   const imagePath = req.file ? `/uploads/complaints/${req.file.filename}` : null;
-  const complaint = await complaintService.createComplaint(req.body, imagePath, req.tenantId);
+  const complaint = await complaintService.createComplaint(req.body, imagePath, req.tenantId, req.user.id);
   success(res, { message: "Complaint submitted successfully.", data: complaint, statusCode: 201 });
 });
 

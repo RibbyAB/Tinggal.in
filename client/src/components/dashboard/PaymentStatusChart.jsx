@@ -1,24 +1,29 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import Panel from "./Panel";
+import { CHART, TOOLTIP_STYLE } from "./chartTheme";
 
-const COLORS = { PENDING: "#f59e0b", APPROVED: "#10b981", REJECTED: "#ef4444" };
+const COLORS = {
+  APPROVED: CHART.primary,
+  PENDING: CHART.warm,
+  REJECTED: CHART.alert,
+};
 
 export default function PaymentStatusChart({ data }) {
   return (
-    <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
-      <h3 className="mb-4 text-sm font-semibold text-gray-700">Payment Status</h3>
-      <ResponsiveContainer width="100%" height={260}>
-        <BarChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-          <XAxis dataKey="status" tick={{ fontSize: 12 }} stroke="#94a3b8" />
-          <YAxis tick={{ fontSize: 12 }} stroke="#94a3b8" allowDecimals={false} />
-          <Tooltip />
-          <Bar dataKey="count" radius={[6, 6, 0, 0]}>
+    <Panel className="flex h-full flex-col" title="Payment Status" subtitle="Rekap verifikasi pembayaran">
+      <ResponsiveContainer width="100%" height="100%" minHeight={280} className="flex-1">
+        <BarChart data={data} margin={{ top: 8, right: 8, left: -18, bottom: 0 }} barSize={44}>
+          <CartesianGrid strokeDasharray="4 4" stroke={CHART.grid} vertical={false} />
+          <XAxis dataKey="status" tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: CHART.axis }} />
+          <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: CHART.axis }} allowDecimals={false} />
+          <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: "rgba(76, 154, 95, 0.06)" }} />
+          <Bar dataKey="count" radius={[8, 8, 0, 0]}>
             {data.map((entry) => (
-              <Cell key={entry.status} fill={COLORS[entry.status] || "#94a3b8"} />
+              <Cell key={entry.status} fill={COLORS[entry.status] || CHART.primaryPale} />
             ))}
           </Bar>
         </BarChart>
       </ResponsiveContainer>
-    </div>
+    </Panel>
   );
 }

@@ -45,8 +45,12 @@ export default function TenantComplaintsPage() {
   }
 
   async function openDetail(row) {
-    const res = await complaintService.getComplaint(row.id);
-    setDetail(res.data.data);
+    try {
+      const res = await complaintService.getComplaint(row.id);
+      setDetail(res.data.data);
+    } catch (err) {
+      showToast(err.response?.data?.message || "Failed to open complaint detail.", "error");
+    }
   }
 
   async function handleSubmit(e) {

@@ -10,8 +10,8 @@ const { createTenantValidator, updateTenantValidator } = require("../validators/
 router.use(authenticateToken, attachTenantId);
 
 router.get("/", authorizeRoles("OWNER", "ADMIN"), getTenants);
-router.get("/:id", getTenant); // ownership enforced in controller for TENANT role
+router.get("/:id", getTenant);
 router.post("/", authorizeRoles("OWNER", "ADMIN"), validate(createTenantValidator), createTenant);
-router.put("/:id", validate(updateTenantValidator), updateTenant); // ownership enforced in controller
+router.put("/:id", validate(updateTenantValidator), updateTenant);
 
 module.exports = router;

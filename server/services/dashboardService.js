@@ -41,7 +41,6 @@ async function getAdminDashboard() {
     }),
   ]);
 
-  // Owner-only financial analytics (revenue) are intentionally excluded here.
   return { totalTenants, availableRooms, pendingPayments, activeComplaints, recentActivity };
 }
 
