@@ -1,4 +1,4 @@
-# Kost Management System
+# Tinggal.in
 
 A full-stack web application for managing a boarding house (*kost*) business:
 rooms, tenants, rentals, monthly billing, payment verification, complaints,

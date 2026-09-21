@@ -44,8 +44,13 @@ export default function LoginPage() {
       <div className="grid w-full max-w-4xl overflow-hidden rounded-2xl bg-white shadow-2xl md:grid-cols-2">
         <div className="flex flex-col justify-center px-8 py-10 sm:px-12">
           <div className="mb-8">
-            <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary-600 text-lg font-bold text-white">
-              K
+            <div className="mb-4 flex items-center gap-2.5">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-600 text-lg font-bold text-white">
+                T
+              </div>
+              <span className="text-lg font-semibold tracking-tight text-gray-900">
+                Tinggal<span className="text-primary-600">.in</span>
+              </span>
             </div>
             <h1 className="text-2xl font-semibold tracking-tight text-gray-900">WELCOME BACK</h1>
             <p className="mt-1 text-sm text-gray-500">Sign in to manage your kost.</p>
@@ -109,7 +114,9 @@ export default function LoginPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 9.75L12 3l9 6.75V21a.75.75 0 01-.75.75H15a.75.75 0 01-.75-.75v-4.5a2.25 2.25 0 00-4.5 0V21a.75.75 0 01-.75.75H3.75A.75.75 0 013 21V9.75z" />
                 </svg>
               </div>
-              <p className="text-sm font-medium text-white/90">Kost Management System</p>
+              <p className="text-sm font-medium text-white/90">
+                Tinggal<span className="text-white/60">.in</span>
+              </p>
               <p className="text-xs text-white/70">
                 Ganti gambar ini dengan foto kost kamu: simpan file di{" "}
                 <code className="rounded bg-white/10 px-1 py-0.5">client/public/</code> lalu isi{" "}

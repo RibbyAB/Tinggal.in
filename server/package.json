@@ -1,7 +1,7 @@
 {
-  "name": "kost-management-server",
+  "name": "tinggal-in-server",
   "version": "1.0.0",
-  "description": "Kost Management System - Backend (Express + Prisma + MySQL)",
+  "description": "Tinggal.in - Backend (Express + Prisma + MySQL)",
   "main": "server.js",
   "type": "commonjs",
   "scripts": {

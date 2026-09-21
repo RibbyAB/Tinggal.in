@@ -12,10 +12,12 @@ export default function Sidebar({ title, links, open, onClose }) {
       >
         <div className="flex h-16 items-center gap-2.5 border-b border-white/10 px-5">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white text-sm font-bold text-primary-700">
-            K
+            T
           </div>
           <div>
-            <p className="text-sm font-semibold text-white">Kost Management</p>
+            <p className="text-sm font-semibold text-white">
+              Tinggal<span className="text-primary-300">.in</span>
+            </p>
             <p className="text-xs text-primary-200">{title}</p>
           </div>
         </div>
@@ -40,4 +42,4 @@ export default function Sidebar({ title, links, open, onClose }) {
       </aside>
     </>
   );
-}
+} 
