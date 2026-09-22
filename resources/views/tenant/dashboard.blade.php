@@ -13,12 +13,12 @@
 
 @section('content')
     <div class="space-y-5">
-        <div>
+        <header>
             <h1 class="text-2xl font-semibold tracking-tight text-gray-900">Overview</h1>
             <p class="text-sm text-gray-500">
                 Halo, {{ explode(' ', auth()->user()->name)[0] }}. Berikut ringkasan kamar dan tagihan kamu.
             </p>
-        </div>
+        </header>
 
         @if (!$rental)
             <div class="rounded-2xl border border-white/70 bg-white/80 p-8 text-center shadow-sm">
@@ -38,7 +38,7 @@
                                 <p class="mt-3 text-3xl font-semibold tracking-tight text-white">
                                     {{ \App\Support\Money::format($currentBill->amount) }}
                                 </p>
-                                <p class="mt-1 text-sm text-white/70">Jatuh tempo {{ optional($currentBill->due_date)->format('d M Y') }}</p>
+                                <p class="mt-1 text-sm text-white/70">Jatuh tempo <time datetime="{{ optional($currentBill->due_date)->format('Y-m-d') }}">{{ optional($currentBill->due_date)->format('d M Y') }}</time></p>
                             @else
                                 <p class="mt-3 text-sm text-white/70">Belum ada tagihan untuk sewa ini.</p>
                             @endif
@@ -90,7 +90,7 @@
                         <ul class="divide-y divide-gray-100">
                             @foreach ($recentPayments as $p)
                                 <li class="flex items-center justify-between gap-3 py-2.5 text-sm">
-                                    <span class="text-gray-600">{{ optional($p->paid_at ?? $p->created_at)->format('d M Y') }}</span>
+                                    <span class="text-gray-600"><time datetime="{{ optional($p->paid_at ?? $p->created_at)->format('Y-m-d') }}">{{ optional($p->paid_at ?? $p->created_at)->format('d M Y') }}</time></span>
                                     <span class="font-medium text-gray-900">{{ \App\Support\Money::format($p->amount) }}</span>
                                     <x-status-badge :status="$p->status" />
                                 </li>

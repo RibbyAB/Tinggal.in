@@ -4,10 +4,10 @@
 
 @section('content')
     <div class="space-y-5">
-        <div>
+        <header>
             <h1 class="text-2xl font-semibold tracking-tight text-gray-900">Overview</h1>
             <p class="text-sm text-gray-500">Halo, {{ explode(' ', auth()->user()->name)[0] }}. Ini tugas operasional hari ini.</p>
-        </div>
+        </header>
 
         <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             <x-stat-card variant="accent" label="Pending Verification" :value="$data['pendingPayments']" sublabel="Menunggu persetujuan Owner" icon="receipt" />

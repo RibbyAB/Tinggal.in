@@ -12,7 +12,19 @@ use App\Http\Controllers\RoomController;
 use App\Http\Controllers\TenantController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', fn () => redirect()->route('login'));
+Route::get('/', function () {
+    $user = auth()->user();
+
+    if (! $user) {
+        return redirect()->route('login');
+    }
+
+    return redirect()->route(match ($user->role) {
+        'OWNER' => 'owner.dashboard',
+        'ADMIN' => 'admin.dashboard',
+        default => 'tenant.dashboard',
+    });
+})->name('home');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');

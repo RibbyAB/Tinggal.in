@@ -18,7 +18,7 @@
             description: {{ Js::from(old('description', '')) }}
         }
      }">
-    <div class="flex flex-wrap items-center justify-between gap-3">
+    <header class="flex flex-wrap items-center justify-between gap-3">
         <div>
             <h1 class="text-xl font-semibold text-gray-900">Rooms</h1>
             <p class="text-sm text-gray-500">Manage room inventory, pricing, and availability.</p>
@@ -27,36 +27,44 @@
             class="rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700">
             + Add Room
         </button>
-    </div>
+    </header>
 
     <x-panel title="Filters">
         <form method="GET" action="{{ route($prefix . '.rooms.index') }}" class="flex flex-wrap items-end gap-3">
             <div>
-                <label class="mb-1 block text-sm font-medium text-gray-700">Search</label>
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search room number..."
-                    class="rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                <label class="block">
+                    <span class="mb-1 block text-sm font-medium text-gray-700">Search</span>
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Search room number..."
+                        class="rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                </label>
             </div>
             <div>
-                <label class="mb-1 block text-sm font-medium text-gray-700">Status</label>
-                <select name="status" class="rounded-lg border border-gray-300 px-3 py-2 text-sm">
-                    <option value="">All Status</option>
-                    @foreach (['AVAILABLE', 'OCCUPIED', 'MAINTENANCE'] as $s)
-                        <option value="{{ $s }}" @selected(request('status') === $s)>{{ ucfirst(strtolower($s)) }}</option>
-                    @endforeach
-                </select>
+                <label class="block">
+                    <span class="mb-1 block text-sm font-medium text-gray-700">Status</span>
+                    <select name="status" class="rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                        <option value="">All Status</option>
+                        @foreach (['AVAILABLE', 'OCCUPIED', 'MAINTENANCE'] as $s)
+                            <option value="{{ $s }}" @selected(request('status') === $s)>{{ ucfirst(strtolower($s)) }}</option>
+                        @endforeach
+                    </select>
+                </label>
             </div>
             <div>
-                <label class="mb-1 block text-sm font-medium text-gray-700">Type</label>
-                <select name="type" class="rounded-lg border border-gray-300 px-3 py-2 text-sm">
-                    <option value="">All Types</option>
-                    @foreach (['STANDARD', 'DELUXE', 'VIP'] as $t)
-                        <option value="{{ $t }}" @selected(request('type') === $t)>{{ ucfirst(strtolower($t)) }}</option>
-                    @endforeach
-                </select>
+                <label class="block">
+                    <span class="mb-1 block text-sm font-medium text-gray-700">Type</span>
+                    <select name="type" class="rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                        <option value="">All Types</option>
+                        @foreach (['STANDARD', 'DELUXE', 'VIP'] as $t)
+                            <option value="{{ $t }}" @selected(request('type') === $t)>{{ ucfirst(strtolower($t)) }}</option>
+                        @endforeach
+                    </select>
+                </label>
             </div>
             <div>
-                <label class="mb-1 block text-sm font-medium text-gray-700">Floor</label>
-                <input type="number" name="floor" value="{{ request('floor') }}" class="w-24 rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                <label class="block">
+                    <span class="mb-1 block text-sm font-medium text-gray-700">Floor</span>
+                    <input type="number" name="floor" value="{{ request('floor') }}" class="w-24 rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                </label>
             </div>
             <button type="submit" class="rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700">Apply</button>
             <a href="{{ route($prefix . '.rooms.index') }}" class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Reset</a>
@@ -68,13 +76,13 @@
             <table class="w-full text-left text-sm">
                 <thead>
                     <tr class="border-b border-gray-100 text-gray-500">
-                        <th class="py-2 pr-4">Room</th>
-                        <th class="py-2 pr-4">Floor</th>
-                        <th class="py-2 pr-4">Type</th>
-                        <th class="py-2 pr-4">Price</th>
-                        <th class="py-2 pr-4">Capacity</th>
-                        <th class="py-2 pr-4">Status</th>
-                        <th class="py-2 pr-4">Actions</th>
+                        <th scope="col" class="py-2 pr-4">Room</th>
+                        <th scope="col" class="py-2 pr-4">Floor</th>
+                        <th scope="col" class="py-2 pr-4">Type</th>
+                        <th scope="col" class="py-2 pr-4">Price</th>
+                        <th scope="col" class="py-2 pr-4">Capacity</th>
+                        <th scope="col" class="py-2 pr-4">Status</th>
+                        <th scope="col" class="py-2 pr-4">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -123,8 +131,11 @@
         <div class="mt-4">{{ $rooms->links() }}</div>
     </x-panel>
 
-    <div x-show="modalOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" style="display:none">
-        <div class="w-full max-w-lg rounded-xl bg-white p-6 shadow-lg" @click.outside="modalOpen = false">
+    <dialog
+            x-effect="(modalOpen) ? ($el.open || $el.showModal()) : ($el.open && $el.close())"
+            x-on:close="modalOpen = false" @click.self="$el.close()"
+            class="w-[calc(100%-2rem)] max-w-lg rounded-xl bg-transparent p-0 shadow-lg">
+        <div class="rounded-xl bg-white p-6">
             <h2 class="mb-4 text-lg font-semibold text-gray-900" x-text="editingId ? 'Edit Room' : 'Add Room'"></h2>
 
             @if ($errors->any())
@@ -147,36 +158,50 @@
                 </template>
 
                 <div class="col-span-2">
-                    <label class="mb-1 block text-sm font-medium text-gray-700">Room Number</label>
-                    <input required name="room_number" x-model="form.room_number" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                    <label class="block">
+                        <span class="mb-1 block text-sm font-medium text-gray-700">Room Number</span>
+                        <input required name="room_number" x-model="form.room_number" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                    </label>
                 </div>
                 <div>
-                    <label class="mb-1 block text-sm font-medium text-gray-700">Floor</label>
-                    <input required type="number" name="floor" x-model="form.floor" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                    <label class="block">
+                        <span class="mb-1 block text-sm font-medium text-gray-700">Floor</span>
+                        <input required type="number" name="floor" x-model="form.floor" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                    </label>
                 </div>
                 <div>
-                    <label class="mb-1 block text-sm font-medium text-gray-700">Type</label>
-                    <select name="type" x-model="form.type" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
-                        <option value="STANDARD">Standard</option>
-                        <option value="DELUXE">Deluxe</option>
-                        <option value="VIP">VIP</option>
-                    </select>
+                    <label class="block">
+                        <span class="mb-1 block text-sm font-medium text-gray-700">Type</span>
+                        <select name="type" x-model="form.type" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                            <option value="STANDARD">Standard</option>
+                            <option value="DELUXE">Deluxe</option>
+                            <option value="VIP">VIP</option>
+                        </select>
+                    </label>
                 </div>
                 <div>
-                    <label class="mb-1 block text-sm font-medium text-gray-700">Price</label>
-                    <input required type="number" step="0.01" name="price" x-model="form.price" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                    <label class="block">
+                        <span class="mb-1 block text-sm font-medium text-gray-700">Price</span>
+                        <input required type="number" step="0.01" name="price" x-model="form.price" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                    </label>
                 </div>
                 <div>
-                    <label class="mb-1 block text-sm font-medium text-gray-700">Capacity</label>
-                    <input type="number" name="capacity" x-model="form.capacity" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                    <label class="block">
+                        <span class="mb-1 block text-sm font-medium text-gray-700">Capacity</span>
+                        <input type="number" name="capacity" x-model="form.capacity" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                    </label>
                 </div>
                 <div class="col-span-2">
-                    <label class="mb-1 block text-sm font-medium text-gray-700">Facilities</label>
-                    <input name="facilities" x-model="form.facilities" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                    <label class="block">
+                        <span class="mb-1 block text-sm font-medium text-gray-700">Facilities</span>
+                        <input name="facilities" x-model="form.facilities" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                    </label>
                 </div>
                 <div class="col-span-2">
-                    <label class="mb-1 block text-sm font-medium text-gray-700">Description</label>
-                    <textarea name="description" x-model="form.description" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"></textarea>
+                    <label class="block">
+                        <span class="mb-1 block text-sm font-medium text-gray-700">Description</span>
+                        <textarea name="description" x-model="form.description" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"></textarea>
+                    </label>
                 </div>
             </form>
 
@@ -185,7 +210,7 @@
                 <button form="room-form" type="submit" class="rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700">Save</button>
             </div>
         </div>
-    </div>
+    </dialog>
 </div>
 
 @endsection

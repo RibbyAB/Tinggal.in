@@ -64,6 +64,8 @@
     </style>
 </head>
 <body class="bg-gray-50 text-gray-900">
-    @yield('content')
+    <main id="main">
+        @yield('content')
+    </main>
 </body>
 </html>

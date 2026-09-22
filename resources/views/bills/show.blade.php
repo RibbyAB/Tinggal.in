@@ -9,10 +9,10 @@
 
 @section('content')
 <div class="space-y-4">
-    <div>
+    <header>
         <h1 class="text-xl font-semibold text-gray-900">Bill #{{ $bill->id }}</h1>
         <p class="text-sm text-gray-500">{{ $monthNames[$bill->bill_month] }} {{ $bill->bill_year }}</p>
-    </div>
+    </header>
 
     <x-panel title="Bill Details">
         <dl class="grid grid-cols-2 gap-4 text-sm">
@@ -32,7 +32,7 @@
             </div>
             <div>
                 <dt class="text-gray-500">Due Date</dt>
-                <dd class="font-medium text-gray-900">{{ optional($bill->due_date)->format('d M Y') }}</dd>
+                <dd class="font-medium text-gray-900"><time datetime="{{ optional($bill->due_date)->format('Y-m-d') }}">{{ optional($bill->due_date)->format('d M Y') }}</time></dd>
             </div>
             <div>
                 <dt class="text-gray-500">Status</dt>
@@ -46,10 +46,10 @@
             <table class="w-full text-left text-sm">
                 <thead>
                     <tr class="border-b border-gray-100 text-gray-500">
-                        <th class="py-2 pr-4">Amount</th>
-                        <th class="py-2 pr-4">Method</th>
-                        <th class="py-2 pr-4">Status</th>
-                        <th class="py-2 pr-4">Actions</th>
+                        <th scope="col" class="py-2 pr-4">Amount</th>
+                        <th scope="col" class="py-2 pr-4">Method</th>
+                        <th scope="col" class="py-2 pr-4">Status</th>
+                        <th scope="col" class="py-2 pr-4">Actions</th>
                     </tr>
                 </thead>
                 <tbody>

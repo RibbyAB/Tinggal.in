@@ -19,7 +19,7 @@ class ComplaintRequest extends FormRequest
             'category' => ['nullable', 'in:ELECTRICITY,WATER,FACILITY,CLEANLINESS,SECURITY,OTHER'],
             'priority' => ['nullable', 'in:LOW,MEDIUM,HIGH'],
 
-            'image' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'image' => ['nullable', 'file', 'mimes:jpg,jpeg,jfif,png,webp,gif,bmp,heic,heif', 'max:5120'],
         ];
     }
 }

@@ -6,10 +6,10 @@
 
 @section('content')
 <div class="space-y-4">
-    <div>
+    <header>
         <h1 class="text-xl font-semibold text-gray-900">{{ $complaint->title }}</h1>
         <p class="text-sm text-gray-500">Submitted by {{ $complaint->tenant->user->name ?? '-' }}</p>
-    </div>
+    </header>
 
     <x-panel title="Complaint Details">
         <dl class="grid grid-cols-2 gap-4 text-sm">
@@ -43,7 +43,7 @@
             @forelse ($complaint->updates as $update)
                 <li class="border-b border-gray-50 pb-2">
                     <span class="font-medium text-gray-900">{{ ucfirst(strtolower(str_replace('_', ' ', $update->status))) }}</span>
-                    <span class="text-gray-500"> by {{ $update->updatedBy->name ?? 'System' }} on {{ optional($update->created_at)->format('d M Y H:i') }}</span>
+                    <span class="text-gray-500"> by {{ $update->updatedBy->name ?? 'System' }} on <time datetime="{{ optional($update->created_at)->format('Y-m-d\\TH:i') }}">{{ optional($update->created_at)->format('d M Y H:i') }}</time></span>
                     @if ($update->note)
                         <p class="text-gray-600">{{ $update->note }}</p>
                     @endif

@@ -49,22 +49,23 @@
 
 <div class="rounded-2xl border p-5 shadow-sm shadow-primary-900/5 {{ $v['card'] }}">
     <div class="flex items-start justify-between gap-3">
-        <p class="text-sm font-medium {{ $v['label'] }}">{{ $label }}</p>
+        <dl class="min-w-0">
+            <dt class="text-sm font-medium {{ $icon ? 'min-h-[2.25rem]' : '' }} {{ $v['label'] }}">{{ $label }}</dt>
+            <dd class="mt-3 text-2xl font-semibold tracking-tight {{ $v['value'] }}">{{ $value }}</dd>
+            @if ($sublabel)
+                <dd class="mt-1 text-xs {{ $v['sub'] }}">{{ $sublabel }}</dd>
+            @endif
+        </dl>
         @if ($icon)
-            <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl {{ $iconClass }}">
+            <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl {{ $iconClass }}" aria-hidden="true">
                 @include('partials.icons', ['icon' => $icon])
             </div>
         @endif
     </div>
 
-    <p class="mt-3 text-2xl font-semibold tracking-tight {{ $v['value'] }}">{{ $value }}</p>
-    @if ($sublabel)
-        <p class="mt-1 text-xs {{ $v['sub'] }}">{{ $sublabel }}</p>
-    @endif
-
     @if (!is_null($progressPct))
         <div class="mt-4">
-            <div class="h-1.5 w-full overflow-hidden rounded-full {{ $v['track'] }}">
+            <div class="h-1.5 w-full overflow-hidden rounded-full {{ $v['track'] }}" aria-hidden="true">
                 <div class="h-full rounded-full {{ $v['bar'] }}" style="width: {{ $progressPct }}%"></div>
             </div>
             @if ($progressLabel)

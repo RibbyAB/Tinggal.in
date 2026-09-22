@@ -6,18 +6,18 @@
     <div class="organic-bg flex min-h-screen items-center justify-center px-4 py-8">
         <div class="grid w-full max-w-4xl overflow-hidden rounded-2xl bg-white shadow-2xl md:grid-cols-2">
             <div class="flex flex-col justify-center px-8 py-10 sm:px-12">
-                <div class="mb-8">
+                <header class="mb-8">
                     <div class="mb-4 flex items-center gap-2.5">
-                        <img src="{{ asset('images/logo.png') }}" alt="Tinggal.in" class="h-10 w-10 rounded-lg object-cover">
+                        <img src="{{ asset('images/logo.png') }}" alt="" class="h-10 w-10 rounded-lg object-cover">
                         <span class="text-lg font-semibold tracking-tight text-gray-900">
                             Tinggal<span class="text-primary-600">.in</span>
                         </span>
                     </div>
                     <h1 class="text-2xl font-semibold tracking-tight text-gray-900">WELCOME BACK</h1>
                     <p class="mt-1 text-sm text-gray-500">Sign in to manage your kost.</p>
-                </div>
+                </header>
 
-                <form method="POST" action="{{ route('login.attempt') }}" class="space-y-4">
+                <form method="POST" action="{{ route('login.attempt') }}" class="space-y-4" aria-label="Form login">
                     @csrf
                     <div>
                         <label for="email" class="mb-1 block text-sm font-medium text-gray-700">Email</label>
@@ -45,11 +45,11 @@
                     </div>
 
                     @if ($errors->any())
-                        <p class="text-sm text-red-600">{{ $errors->first('email') }}</p>
+                        <p role="alert" class="text-sm text-red-600">{{ $errors->first('email') }}</p>
                     @endif
 
                     @if (session('error'))
-                        <p class="text-sm text-red-600">{{ session('error') }}</p>
+                        <p role="alert" class="text-sm text-red-600">{{ session('error') }}</p>
                     @endif
 
                     <button
@@ -60,15 +60,17 @@
                     </button>
                 </form>
 
-                <div class="mt-6 rounded-lg bg-gray-50 p-3 text-xs text-gray-500">
-                    <p class="mb-1 font-medium text-gray-600">Demo accounts (password: password123)</p>
-                    <p>Owner: owner@tinggal.in</p>
-                    <p>Admin: admin@tinggal.in</p>
-                    <p>Tenant: tenant@tinggal.in</p>
-                </div>
+                <aside aria-labelledby="demo-accounts" class="mt-6 rounded-lg bg-gray-50 p-3 text-xs text-gray-500">
+                    <h2 id="demo-accounts" class="mb-1 font-medium text-gray-600">Demo accounts (password: password123)</h2>
+                    <ul>
+                        <li>Owner: owner@tinggal.in</li>
+                        <li>Admin: admin@tinggal.in</li>
+                        <li>Tenant: tenant@tinggal.in</li>
+                    </ul>
+                </aside>
             </div>
 
-            <div class="relative hidden min-h-[420px] md:block">
+            <div class="relative hidden min-h-[420px] md:block" aria-hidden="true">
                 <img src="{{ asset('images/Room.png') }}" alt="" class="absolute inset-0 h-full w-full object-cover">
                 <div class="absolute inset-0 bg-gradient-to-br from-primary-700/75 to-primary-900/80"></div>
 

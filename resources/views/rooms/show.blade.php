@@ -13,7 +13,7 @@
 
 @section('content')
 <div class="space-y-4">
-    <div class="flex flex-wrap items-start justify-between gap-3">
+    <header class="flex flex-wrap items-start justify-between gap-3">
         <div>
             <h1 class="text-xl font-semibold text-gray-900">Room {{ $room->room_number }}</h1>
             <p class="text-sm text-gray-500">Detail kamar dan penghuni saat ini.</p>
@@ -22,7 +22,7 @@
            class="rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-50">
             &larr; Back to Rooms
         </a>
-    </div>
+    </header>
 
     <div class="grid gap-4 lg:grid-cols-3">
         <div class="lg:col-span-2">
@@ -95,7 +95,7 @@
                     </div>
                     <div>
                         <dt class="text-gray-500">Start Date</dt>
-                        <dd class="font-medium text-gray-900">{{ optional($activeRental->start_date)->format('d M Y') }}</dd>
+                        <dd class="font-medium text-gray-900"><time datetime="{{ optional($activeRental->start_date)->format('Y-m-d') }}">{{ optional($activeRental->start_date)->format('d M Y') }}</time></dd>
                     </div>
                     <div>
                         <dt class="text-gray-500">Monthly Price</dt>

@@ -4,10 +4,10 @@
 
 @section('content')
     <div class="space-y-6">
-        <div>
+        <header>
             <h1 class="text-xl font-semibold text-gray-900">Reports</h1>
             <p class="text-sm text-gray-500">Financial and operational analytics (Owner only).</p>
-        </div>
+        </header>
 
         <x-panel title="Revenue Analytics" :subtitle="'Pendapatan ' . $months . ' bulan terakhir'" class="flex flex-col">
             <x-slot:action>
@@ -17,14 +17,14 @@
                 </div>
             </x-slot:action>
             <div style="min-height: 300px;">
-                <canvas id="revenueChart"></canvas>
+                <canvas id="revenueChart" role="img" aria-label="Grafik pendapatan per bulan">Grafik pendapatan per bulan.</canvas>
             </div>
         </x-panel>
 
         <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <x-panel title="Room Occupancy" subtitle="Distribusi status kamar">
                 <div class="relative">
-                    <canvas id="occupancyChart" height="220"></canvas>
+                    <canvas id="occupancyChart" height="220" role="img" aria-label="Diagram status kamar: terisi, tersedia, dan maintenance">Diagram status kamar: terisi, tersedia, dan maintenance.</canvas>
                     <div class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
                         <p class="text-2xl font-semibold text-gray-900">{{ $occupancy['total'] }}</p>
                         <p class="text-xs text-gray-400">Total kamar</p>
@@ -58,7 +58,7 @@
 
             <x-panel title="Payment Status" subtitle="Rekap verifikasi pembayaran" class="flex flex-col">
                 <div style="min-height: 280px;">
-                    <canvas id="paymentStatusChart"></canvas>
+                    <canvas id="paymentStatusChart" role="img" aria-label="Grafik jumlah pembayaran per status verifikasi">Grafik jumlah pembayaran per status verifikasi.</canvas>
                 </div>
             </x-panel>
         </div>

@@ -4,12 +4,12 @@
 
 @section('content')
     <div class="space-y-5">
-        <div>
+        <header>
             <h1 class="text-2xl font-semibold tracking-tight text-gray-900">Overview</h1>
             <p class="text-sm text-gray-500">
                 Selamat datang kembali, {{ explode(' ', auth()->user()->name)[0] }}. Berikut ringkasan kost kamu hari ini.
             </p>
-        </div>
+        </header>
 
         <div class="grid gap-5 lg:grid-cols-3">
             <div class="lg:col-span-2">
@@ -21,7 +21,7 @@
                         </div>
                     </x-slot:action>
                     <div class="flex-1" style="min-height: 280px;">
-                        <canvas id="revenueChart"></canvas>
+                        <canvas id="revenueChart" role="img" aria-label="Grafik pendapatan per bulan">Grafik pendapatan per bulan.</canvas>
                     </div>
                 </x-panel>
             </div>
@@ -55,7 +55,7 @@
         <div class="grid gap-5 lg:grid-cols-3">
             <x-panel title="Room Occupancy" subtitle="Distribusi status kamar" class="h-full">
                 <div class="relative">
-                    <canvas id="occupancyChart" height="220"></canvas>
+                    <canvas id="occupancyChart" height="220" role="img" aria-label="Diagram status kamar: terisi, tersedia, dan maintenance">Diagram status kamar: terisi, tersedia, dan maintenance.</canvas>
                     <div class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
                         <p class="text-2xl font-semibold text-gray-900">{{ $data['total'] }}</p>
                         <p class="text-xs text-gray-400">Total kamar</p>
@@ -90,7 +90,7 @@
             <div class="lg:col-span-2">
                 <x-panel title="Payment Status" subtitle="Rekap verifikasi pembayaran" class="flex h-full flex-col">
                     <div class="flex-1" style="min-height: 280px;">
-                        <canvas id="paymentStatusChart"></canvas>
+                        <canvas id="paymentStatusChart" role="img" aria-label="Grafik jumlah pembayaran per status verifikasi">Grafik jumlah pembayaran per status verifikasi.</canvas>
                     </div>
                 </x-panel>
             </div>

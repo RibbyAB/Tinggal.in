@@ -10,7 +10,7 @@
 
 @section('content')
 <div class="space-y-4" x-data="{ modalOpen: {{ $errors->any() ? 'true' : 'false' }} }">
-    <div class="flex flex-wrap items-center justify-between gap-3">
+    <header class="flex flex-wrap items-center justify-between gap-3">
         <div>
             <h1 class="text-xl font-semibold text-gray-900">{{ $isTenant ? 'My Bills' : 'Bills' }}</h1>
             <p class="text-sm text-gray-500">{{ $isTenant ? 'View your monthly bills.' : 'Generate and track tenant bills.' }}</p>
@@ -20,27 +20,31 @@
                 + Generate Bill
             </button>
         @endif
-    </div>
+    </header>
 
     <x-panel title="Filters">
         <form method="GET" action="{{ route($prefix . '.bills.index') }}" class="flex flex-wrap items-end gap-3">
             <div>
-                <label class="mb-1 block text-sm font-medium text-gray-700">Status</label>
-                <select name="status" class="rounded-lg border border-gray-300 px-3 py-2 text-sm">
-                    <option value="">All Status</option>
-                    @foreach (['UNPAID', 'PENDING_VERIFICATION', 'PAID', 'OVERDUE'] as $s)
-                        <option value="{{ $s }}" @selected(request('status') === $s)>{{ ucfirst(strtolower(str_replace('_', ' ', $s))) }}</option>
-                    @endforeach
-                </select>
+                <label class="block">
+                    <span class="mb-1 block text-sm font-medium text-gray-700">Status</span>
+                    <select name="status" class="rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                        <option value="">All Status</option>
+                        @foreach (['UNPAID', 'PENDING_VERIFICATION', 'PAID', 'OVERDUE'] as $s)
+                            <option value="{{ $s }}" @selected(request('status') === $s)>{{ ucfirst(strtolower(str_replace('_', ' ', $s))) }}</option>
+                        @endforeach
+                    </select>
+                </label>
             </div>
             <div>
-                <label class="mb-1 block text-sm font-medium text-gray-700">Month</label>
-                <select name="month" class="rounded-lg border border-gray-300 px-3 py-2 text-sm">
-                    <option value="">All Months</option>
-                    @for ($m = 1; $m <= 12; $m++)
-                        <option value="{{ $m }}" @selected((string) request('month') === (string) $m)>{{ $monthNames[$m] }}</option>
-                    @endfor
-                </select>
+                <label class="block">
+                    <span class="mb-1 block text-sm font-medium text-gray-700">Month</span>
+                    <select name="month" class="rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                        <option value="">All Months</option>
+                        @for ($m = 1; $m <= 12; $m++)
+                            <option value="{{ $m }}" @selected((string) request('month') === (string) $m)>{{ $monthNames[$m] }}</option>
+                        @endfor
+                    </select>
+                </label>
             </div>
             <button type="submit" class="rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700">Apply</button>
             <a href="{{ route($prefix . '.bills.index') }}" class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Reset</a>
@@ -53,14 +57,14 @@
                 <thead>
                     <tr class="border-b border-gray-100 text-gray-500">
                         @unless ($isTenant)
-                            <th class="py-2 pr-4">Tenant</th>
+                            <th scope="col" class="py-2 pr-4">Tenant</th>
                         @endunless
-                        <th class="py-2 pr-4">Room</th>
-                        <th class="py-2 pr-4">Period</th>
-                        <th class="py-2 pr-4">Amount</th>
-                        <th class="py-2 pr-4">Due Date</th>
-                        <th class="py-2 pr-4">Status</th>
-                        <th class="py-2 pr-4">Actions</th>
+                        <th scope="col" class="py-2 pr-4">Room</th>
+                        <th scope="col" class="py-2 pr-4">Period</th>
+                        <th scope="col" class="py-2 pr-4">Amount</th>
+                        <th scope="col" class="py-2 pr-4">Due Date</th>
+                        <th scope="col" class="py-2 pr-4">Status</th>
+                        <th scope="col" class="py-2 pr-4">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -72,7 +76,7 @@
                             <td class="py-2 pr-4">{{ $bill->rental->room->room_number ?? '-' }}</td>
                             <td class="py-2 pr-4">{{ $monthNames[$bill->bill_month] }} {{ $bill->bill_year }}</td>
                             <td class="py-2 pr-4">Rp {{ number_format($bill->amount, 0, ',', '.') }}</td>
-                            <td class="py-2 pr-4">{{ optional($bill->due_date)->format('d M Y') }}</td>
+                            <td class="py-2 pr-4"><time datetime="{{ optional($bill->due_date)->format('Y-m-d') }}">{{ optional($bill->due_date)->format('d M Y') }}</time></td>
                             <td class="py-2 pr-4"><x-status-badge :status="$bill->status" /></td>
                             <td class="py-2 pr-4">
                                 <a href="{{ route($prefix . '.bills.show', $bill) }}" class="text-primary-600 hover:underline">View</a>
@@ -90,9 +94,12 @@
     </x-panel>
 
     @if ($canGenerate)
-        <div x-show="modalOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" style="display:none">
-            <div class="w-full max-w-lg rounded-xl bg-white p-6 shadow-lg" @click.outside="modalOpen = false">
-                <h2 class="mb-4 text-lg font-semibold text-gray-900">Generate Bill</h2>
+        <dialog aria-labelledby="bills-dialog-1"
+                x-effect="(modalOpen) ? ($el.open || $el.showModal()) : ($el.open && $el.close())"
+                x-on:close="modalOpen = false" @click.self="$el.close()"
+                class="w-[calc(100%-2rem)] max-w-lg rounded-xl bg-transparent p-0 shadow-lg">
+            <div class="rounded-xl bg-white p-6">
+                <h2 id="bills-dialog-1" class="mb-4 text-lg font-semibold text-gray-900">Generate Bill</h2>
 
                 @if ($errors->any())
                     <div class="mb-3 rounded-lg bg-red-50 p-3 text-sm text-red-700">
@@ -107,31 +114,39 @@
                 <form id="bill-form" method="POST" action="{{ route($prefix . '.bills.generate') }}" class="grid grid-cols-2 gap-3">
                     @csrf
                     <div class="col-span-2">
-                        <label class="mb-1 block text-sm font-medium text-gray-700">Rental</label>
-                        <select required name="rental_id" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
-                            <option value="">Select active rental</option>
-                            @foreach ($billableRentals as $rental)
-                                <option value="{{ $rental->id }}" @selected(old('rental_id') == $rental->id)>
-                                    {{ $rental->tenant->user->name ?? '-' }} - {{ $rental->room->room_number ?? '-' }}
-                                </option>
-                            @endforeach
-                        </select>
+                        <label class="block">
+                            <span class="mb-1 block text-sm font-medium text-gray-700">Rental</span>
+                            <select required name="rental_id" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                                <option value="">Select active rental</option>
+                                @foreach ($billableRentals as $rental)
+                                    <option value="{{ $rental->id }}" @selected(old('rental_id') == $rental->id)>
+                                        {{ $rental->tenant->user->name ?? '-' }} - {{ $rental->room->room_number ?? '-' }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </label>
                     </div>
                     <div>
-                        <label class="mb-1 block text-sm font-medium text-gray-700">Bill Month</label>
-                        <select required name="bill_month" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
-                            @for ($m = 1; $m <= 12; $m++)
-                                <option value="{{ $m }}" @selected((old('bill_month') ?: now()->month) == $m)>{{ $monthNames[$m] }}</option>
-                            @endfor
-                        </select>
+                        <label class="block">
+                            <span class="mb-1 block text-sm font-medium text-gray-700">Bill Month</span>
+                            <select required name="bill_month" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                                @for ($m = 1; $m <= 12; $m++)
+                                    <option value="{{ $m }}" @selected((old('bill_month') ?: now()->month) == $m)>{{ $monthNames[$m] }}</option>
+                                @endfor
+                            </select>
+                        </label>
                     </div>
                     <div>
-                        <label class="mb-1 block text-sm font-medium text-gray-700">Bill Year</label>
-                        <input required type="number" name="bill_year" value="{{ old('bill_year', now()->year) }}" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                        <label class="block">
+                            <span class="mb-1 block text-sm font-medium text-gray-700">Bill Year</span>
+                            <input required type="number" name="bill_year" value="{{ old('bill_year', now()->year) }}" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                        </label>
                     </div>
                     <div class="col-span-2">
-                        <label class="mb-1 block text-sm font-medium text-gray-700">Due Date</label>
-                        <input required type="date" name="due_date" value="{{ old('due_date') }}" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                        <label class="block">
+                            <span class="mb-1 block text-sm font-medium text-gray-700">Due Date</span>
+                            <input required type="date" name="due_date" value="{{ old('due_date') }}" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                        </label>
                     </div>
                 </form>
 
@@ -140,7 +155,7 @@
                     <button form="bill-form" type="submit" class="rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700">Generate</button>
                 </div>
             </div>
-        </div>
+        </dialog>
 
     @endif
 </div>

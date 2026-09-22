@@ -115,6 +115,24 @@ log — jejak audit siapa melakukan apa hanya dapat dilihat Owner.
   dan tidak pernah diambil dari input pengguna, sehingga penghuni tidak dapat
   mengakses data penghuni lain dengan menebak URL.
 
+## Semantic HTML
+
+Markup mengikuti panduan [web.dev — Semantic HTML](https://web.dev/learn/html/semantic-html?hl=id):
+
+- **Landmark** — setiap halaman punya `<header>`, `<nav aria-label="Navigasi utama">`,
+  `<main id="main">`, dan `<footer>`, plus tautan "Lewati ke konten utama" untuk pengguna keyboard.
+- **Hierarki heading** — satu `<h1>` per halaman; setiap panel adalah `<section>` dengan `<h2>`
+  yang terhubung lewat `aria-labelledby`.
+- **Navigasi** — menu berupa `<ul>`/`<li>`, halaman aktif ditandai `aria-current="page"`.
+- **Form** — setiap `<label>` membungkus kontrolnya, jadi label terhubung ke input tanpa perlu `id`.
+- **Modal** — memakai elemen `<dialog>` asli (bisa ditutup dengan Esc, fokus terkunci di dalamnya),
+  bukan `<div>` yang disulap jadi modal.
+- **Data** — pasangan label–nilai memakai `<dl>`/`<dt>`/`<dd>`, tanggal memakai `<time datetime>`,
+  header tabel memakai `<th scope="col">`.
+- **ARIA hanya sebagai cadangan** — dipakai untuk hal yang tidak punya elemen HTML padanannya:
+  grafik `<canvas role="img" aria-label>`, notifikasi `role="status"`/`role="alert"`,
+  dan elemen dekoratif `aria-hidden="true"`.
+
 ## Struktur
 
 ```

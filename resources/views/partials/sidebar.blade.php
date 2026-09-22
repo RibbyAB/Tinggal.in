@@ -34,23 +34,27 @@
     $roleTitle = ucfirst(strtolower($role));
 @endphp
 
-<aside class="w-64 shrink-0 bg-primary-800 lg:sticky lg:top-0 lg:h-screen lg:self-start lg:overflow-y-auto">
-    <div class="flex h-16 items-center gap-2.5 border-b border-white/10 px-5">
-        <img src="{{ asset('images/logo.png') }}" alt="Tinggal.in" class="h-8 w-8 rounded-lg object-cover">
-        <div>
-            <p class="text-sm font-semibold text-white">
+<nav aria-label="Navigasi utama" class="w-64 shrink-0 bg-primary-800 lg:sticky lg:top-0 lg:h-screen lg:self-start lg:overflow-y-auto">
+    <a href="{{ route('home') }}" class="flex h-16 items-center gap-2.5 border-b border-white/10 px-5">
+        <img src="{{ asset('images/logo.png') }}" alt="" class="h-8 w-8 rounded-lg object-cover">
+        <span>
+            <span class="block text-sm font-semibold text-white">
                 Tinggal<span class="text-primary-300">.in</span>
-            </p>
-            <p class="text-xs text-primary-200">{{ $roleTitle }}</p>
-        </div>
-    </div>
+            </span>
+            <span class="block text-xs text-primary-200">{{ $roleTitle }}</span>
+        </span>
+    </a>
 
-    <nav class="flex flex-col gap-1 p-3">
+    <ul class="flex flex-col gap-1 p-3">
         @foreach ($links as $link)
-            <a href="{{ route($link['route']) }}"
-               class="rounded-lg px-3 py-2 text-sm font-medium transition-colors {{ request()->routeIs($link['pattern']) ? 'bg-white/15 text-white' : 'text-primary-100/70 hover:bg-white/10 hover:text-white' }}">
-                {{ $link['label'] }}
-            </a>
+            @php $isActive = request()->routeIs($link['pattern']); @endphp
+            <li>
+                <a href="{{ route($link['route']) }}"
+                   @if ($isActive) aria-current="page" @endif
+                   class="block rounded-lg px-3 py-2 text-sm font-medium transition-colors {{ $isActive ? 'bg-white/15 text-white' : 'text-primary-100/70 hover:bg-white/10 hover:text-white' }}">
+                    {{ $link['label'] }}
+                </a>
+            </li>
         @endforeach
-    </nav>
-</aside>
+    </ul>
+</nav>

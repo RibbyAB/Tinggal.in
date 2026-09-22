@@ -38,8 +38,8 @@
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3/dist/cdn.min.js" defer></script>
 
     <style>
-        [x-cloak] {
-            display: none !important;
+        dialog::backdrop {
+            background: rgb(0 0 0 / 0.4);
         }
 
         .organic-bg {
@@ -70,29 +70,37 @@
     @stack('head')
 </head>
 <body class="dashboard-bg min-h-screen text-gray-900">
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-primary-700 focus:shadow">
+        Lewati ke konten utama
+    </a>
+
     <div class="lg:flex">
         @include('partials.sidebar')
 
-        <div class="min-h-screen flex-1">
+        <div class="flex min-h-screen flex-1 flex-col">
             @include('partials.navbar')
 
-            <main class="px-4 py-6 lg:px-8">
+            <main id="main" class="flex-1 px-4 py-6 lg:px-8">
                 @if (session('success'))
-                    <div id="flash-success" class="mb-5 flex items-start justify-between gap-3 rounded-xl border border-primary-200 bg-primary-50 px-4 py-3 text-sm text-primary-800">
+                    <div id="flash-success" role="status" class="mb-5 flex items-start justify-between gap-3 rounded-xl border border-primary-200 bg-primary-50 px-4 py-3 text-sm text-primary-800">
                         <span>{{ session('success') }}</span>
-                        <button type="button" onclick="document.getElementById('flash-success').remove()" class="text-primary-700/70 hover:text-primary-900" aria-label="Dismiss">&times;</button>
+                        <button type="button" onclick="document.getElementById('flash-success').remove()" class="text-primary-700/70 hover:text-primary-900" aria-label="Tutup pesan">&times;</button>
                     </div>
                 @endif
 
                 @if (session('error'))
-                    <div id="flash-error" class="mb-5 flex items-start justify-between gap-3 rounded-xl border border-clay-100 bg-clay-50 px-4 py-3 text-sm text-clay-700">
+                    <div id="flash-error" role="alert" class="mb-5 flex items-start justify-between gap-3 rounded-xl border border-clay-100 bg-clay-50 px-4 py-3 text-sm text-clay-700">
                         <span>{{ session('error') }}</span>
-                        <button type="button" onclick="document.getElementById('flash-error').remove()" class="text-clay-700/70 hover:text-clay-700" aria-label="Dismiss">&times;</button>
+                        <button type="button" onclick="document.getElementById('flash-error').remove()" class="text-clay-700/70 hover:text-clay-700" aria-label="Tutup pesan">&times;</button>
                     </div>
                 @endif
 
                 @yield('content')
             </main>
+
+            <footer class="px-4 pb-6 text-xs text-gray-400 lg:px-8">
+                <p>&copy; {{ date('Y') }} Tinggal.in &middot; Sistem manajemen kost</p>
+            </footer>
         </div>
     </div>
 

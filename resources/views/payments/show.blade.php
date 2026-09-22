@@ -9,10 +9,10 @@
 
 @section('content')
 <div class="space-y-4" x-data="{ rejectOpen: false }">
-    <div>
+    <header>
         <h1 class="text-xl font-semibold text-gray-900">Payment #{{ $payment->id }}</h1>
         <p class="text-sm text-gray-500">Submitted payment proof and verification status.</p>
-    </div>
+    </header>
 
     <x-panel title="Payment Details">
         <dl class="grid grid-cols-2 gap-4 text-sm">
@@ -77,21 +77,26 @@
     </x-panel>
 
     @if ($canVerify)
-        <div x-show="rejectOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" style="display:none">
-            <div class="w-full max-w-md rounded-xl bg-white p-6 shadow-lg" @click.outside="rejectOpen = false">
-                <h3 class="mb-3 text-lg font-semibold text-gray-900">Reject Payment</h3>
+        <dialog aria-labelledby="payments-dialog-1"
+                x-effect="(rejectOpen) ? ($el.open || $el.showModal()) : ($el.open && $el.close())"
+                x-on:close="rejectOpen = false" @click.self="$el.close()"
+                class="w-[calc(100%-2rem)] max-w-md rounded-xl bg-transparent p-0 shadow-lg">
+            <div class="rounded-xl bg-white p-6">
+                <h2 id="payments-dialog-1" class="mb-3 text-lg font-semibold text-gray-900">Reject Payment</h2>
                 <form method="POST" action="{{ route('owner.payments.reject', $payment) }}">
                     @csrf
                     @method('PATCH')
-                    <label class="mb-1 block text-sm font-medium text-gray-700">Rejection note</label>
-                    <textarea name="note" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" required></textarea>
+                    <label class="block">
+                        <span class="mb-1 block text-sm font-medium text-gray-700">Rejection note</span>
+                        <textarea name="note" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" required></textarea>
+                    </label>
                     <div class="mt-4 flex justify-end gap-2">
                         <button type="button" @click="rejectOpen = false" class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Cancel</button>
                         <button type="submit" class="rounded-lg bg-clay-500 px-4 py-2 text-sm font-medium text-white hover:bg-clay-700">Reject</button>
                     </div>
                 </form>
             </div>
-        </div>
+        </dialog>
     @endif
 
     <a href="{{ route($prefix . '.payments.index') }}" class="text-sm text-primary-600 hover:underline">&larr; Back to Payments</a>
