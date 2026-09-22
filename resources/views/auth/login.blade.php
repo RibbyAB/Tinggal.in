@@ -8,9 +8,7 @@
             <div class="flex flex-col justify-center px-8 py-10 sm:px-12">
                 <div class="mb-8">
                     <div class="mb-4 flex items-center gap-2.5">
-                        <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-600 text-lg font-bold text-white">
-                            T
-                        </div>
+                        <img src="{{ asset('images/logo.png') }}" alt="Tinggal.in" class="h-10 w-10 rounded-lg object-cover">
                         <span class="text-lg font-semibold tracking-tight text-gray-900">
                             Tinggal<span class="text-primary-600">.in</span>
                         </span>
@@ -71,18 +69,17 @@
             </div>
 
             <div class="relative hidden min-h-[420px] md:block">
-                <div class="flex h-full flex-col items-center justify-center gap-3 bg-gradient-to-br from-primary-500 to-primary-700 p-8 text-center">
-                    <div class="flex h-16 w-16 items-center justify-center rounded-full bg-white/15 text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9.75L12 3l9 6.75V21a.75.75 0 01-.75.75H15a.75.75 0 01-.75-.75v-4.5a2.25 2.25 0 00-4.5 0V21a.75.75 0 01-.75.75H3.75A.75.75 0 013 21V9.75z" />
-                        </svg>
-                    </div>
+                <img src="{{ asset('images/Room.png') }}" alt="" class="absolute inset-0 h-full w-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-br from-primary-700/75 to-primary-900/80"></div>
+
+                <div class="relative flex h-full flex-col items-center justify-center gap-3 p-8 text-center">
+                    <img src="{{ asset('images/logo.png') }}" alt="" class="h-16 w-16 rounded-full object-cover ring-2 ring-white/30">
                     <p class="text-sm font-medium text-white/90">
                         Tinggal<span class="text-white/60">.in</span>
                     </p>
                 </div>
 
-                <div class="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/30 to-transparent"></div>
+                <div class="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/40 to-transparent"></div>
             </div>
         </div>
     </div>
