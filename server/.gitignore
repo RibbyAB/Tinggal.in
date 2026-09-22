@@ -1,7 +1,0 @@
-node_modules
-.env
-dist
-uploads/payments/*
-uploads/complaints/*
-!uploads/payments/.gitkeep
-!uploads/complaints/.gitkeep
