@@ -58,7 +58,7 @@ Route::middleware(['auth', 'active', 'tenant.scope'])->group(function () {
     });
 
     Route::get('/activity-logs', [ActivityLogController::class, 'index'])
-        ->middleware('role:OWNER,ADMIN')->name('activity-logs.index');
+        ->middleware('role:OWNER')->name('activity-logs.index');
 
     Route::prefix('admin')->middleware('role:ADMIN')->name('admin.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'admin'])->name('dashboard');

@@ -16,25 +16,35 @@
             <x-stat-card label="Active Complaints" :value="$data['activeComplaints']" sublabel="Open + In Progress" icon="chat" icon-tone="warm" />
         </div>
 
-        <x-panel title="Recent Activity" subtitle="Aktivitas terbaru pada sistem">
-            @if (count($data['recentActivity']) === 0)
-                <p class="text-sm text-gray-400">No recent activity.</p>
+        <x-panel title="Komplain Perlu Ditangani" subtitle="Status Open dan In Progress">
+            <x-slot:action>
+                <a href="{{ route('admin.complaints.index') }}" class="text-sm font-medium text-primary-700 hover:text-primary-800">
+                    Lihat semua
+                </a>
+            </x-slot:action>
+
+            @if (count($data['recentComplaints']) === 0)
+                <p class="text-sm text-gray-400">Tidak ada komplain yang perlu ditangani.</p>
             @else
                 <ul class="divide-y divide-gray-100">
-                    @foreach ($data['recentActivity'] as $log)
+                    @foreach ($data['recentComplaints'] as $complaint)
                         <li class="flex items-center justify-between gap-3 py-3 text-sm">
                             <div class="flex min-w-0 items-center gap-3">
                                 <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary-50 text-primary-700">
-                                    @include('partials.icons', ['icon' => 'receipt'])
+                                    @include('partials.icons', ['icon' => 'chat'])
                                 </div>
                                 <div class="min-w-0">
-                                    <p class="truncate font-medium text-gray-800">{{ str_replace('_', ' ', $log->action) }}</p>
-                                    <p class="truncate text-xs text-gray-400">{{ $log->details }}</p>
+                                    <a href="{{ route('admin.complaints.show', $complaint) }}" class="truncate font-medium text-gray-800 hover:text-primary-700">
+                                        {{ $complaint->title }}
+                                    </a>
+                                    <p class="truncate text-xs text-gray-400">
+                                        {{ $complaint->tenant->user->name ?? '-' }} &middot; {{ ucfirst(strtolower($complaint->category)) }}
+                                    </p>
                                 </div>
                             </div>
-                            <div class="shrink-0 text-right">
-                                <p class="text-xs font-medium text-gray-600">{{ $log->user->name ?? 'System' }}</p>
-                                <p class="text-xs text-gray-400">{{ optional($log->created_at)->format('d M Y') }}</p>
+                            <div class="flex shrink-0 items-center gap-2">
+                                <x-status-badge :status="$complaint->priority" />
+                                <x-status-badge :status="$complaint->status" />
                             </div>
                         </li>
                     @endforeach

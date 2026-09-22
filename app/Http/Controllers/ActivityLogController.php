@@ -14,7 +14,8 @@ class ActivityLogController extends Controller
 
         $logs = ActivityLog::with('user:id,name,role')
             ->orderByDesc('created_at')
-            ->paginate($limit ?: 20);
+            ->paginate($limit ?: 20)
+            ->withQueryString();
 
         return view('activity-logs.index', ['logs' => $logs]);
     }

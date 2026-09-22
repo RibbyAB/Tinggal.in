@@ -86,13 +86,14 @@ php artisan migrate:fresh --seed
 | **Laporan pendapatan** | ✅ | ❌ | ❌ |
 | Upload bukti bayar | ❌ | ❌ | ✅ |
 | Komplain | lihat + ubah status | lihat + ubah status | buat + lihat milik sendiri |
-| Activity log | ✅ | ✅ | ❌ |
+| **Activity log** | ✅ | ❌ | ❌ |
 
 Admin tidak bisa approve/reject pembayaran karena dana ditransfer langsung ke
 rekening Owner, sehingga hanya Owner yang dapat memastikan uangnya benar-benar
 masuk. Route `approve` dan `reject` tidak didaftarkan sama sekali di grup
 `/admin` (lihat `routes/web.php`) — jadi bukan sekadar tombolnya disembunyikan.
-Admin juga tidak memiliki akses ke laporan pendapatan agregat.
+Admin juga tidak memiliki akses ke laporan pendapatan agregat maupun activity
+log — jejak audit siapa melakukan apa hanya dapat dilihat Owner.
 
 ## Aturan bisnis
 

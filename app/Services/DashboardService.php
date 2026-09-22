@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\Bill;
 use App\Models\Complaint;
 use App\Models\Payment;
-use App\Models\ActivityLog;
 use App\Models\Rental;
 use App\Models\Room;
 use App\Models\Tenant;
@@ -41,9 +40,10 @@ class DashboardService
             'availableRooms' => Room::where('status', 'AVAILABLE')->count(),
             'pendingPayments' => Payment::where('status', 'PENDING')->count(),
             'activeComplaints' => Complaint::whereIn('status', ['OPEN', 'IN_PROGRESS'])->count(),
-            'recentActivity' => ActivityLog::with('user:id,name,role')
+            'recentComplaints' => Complaint::with('tenant.user')
+                ->whereIn('status', ['OPEN', 'IN_PROGRESS'])
                 ->orderByDesc('created_at')
-                ->limit(10)
+                ->limit(8)
                 ->get(),
         ];
     }

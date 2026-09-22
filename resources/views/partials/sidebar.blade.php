@@ -21,7 +21,6 @@
             ['route' => 'admin.bills.index', 'pattern' => 'admin.bills.*', 'label' => 'Bills'],
             ['route' => 'admin.payments.index', 'pattern' => 'admin.payments.*', 'label' => 'Payments'],
             ['route' => 'admin.complaints.index', 'pattern' => 'admin.complaints.*', 'label' => 'Complaints'],
-            ['route' => 'activity-logs.index', 'pattern' => 'activity-logs.*', 'label' => 'Activity Logs'],
         ],
         default => [
             ['route' => 'tenant.dashboard', 'pattern' => 'tenant.dashboard', 'label' => 'Dashboard'],
@@ -37,9 +36,7 @@
 
 <aside class="w-64 shrink-0 bg-primary-800 lg:sticky lg:top-0 lg:h-screen lg:self-start lg:overflow-y-auto">
     <div class="flex h-16 items-center gap-2.5 border-b border-white/10 px-5">
-        <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-white text-sm font-bold text-primary-700">
-            T
-        </div>
+        <img src="{{ asset('images/logo.png') }}" alt="Tinggal.in" class="h-8 w-8 rounded-lg object-cover">
         <div>
             <p class="text-sm font-semibold text-white">
                 Tinggal<span class="text-primary-300">.in</span>
